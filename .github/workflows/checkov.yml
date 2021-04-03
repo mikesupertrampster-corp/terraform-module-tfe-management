@@ -1,0 +1,16 @@
+name: Checkov
+on: push
+jobs:
+  checkov:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: ./
+          quiet: true
+          soft_fail: false
+          framework: terraform
+          output_format: json
