@@ -8,11 +8,11 @@ resource "tfe_workspace" "all" {
   working_directory = each.value["workdir"]
 
   dynamic "vcs_repo" {
-    for_each = each.value["vcs_repo"] != null && length(tfe_oauth_client.github) != 0 ? [each.value["vcs_repo"]] : []
+    for_each = each.value["vcs_repo"] != null && length(tfe_oauth_client.client) != 0 ? [each.value["vcs_repo"]] : []
     content {
-      identifier         = vcs_repo.value
+      identifier         = vcs_repo.value["repo"]
       ingress_submodules = false
-      oauth_token_id     = tfe_oauth_client.github.0.oauth_token_id
+      oauth_token_id     = tfe_oauth_client.client[var.tfe_oauth_client.provider].oauth_token_id
     }
   }
 }
