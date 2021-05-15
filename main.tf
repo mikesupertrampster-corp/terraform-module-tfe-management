@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    tfe = {
+      source = "hashicorp/tfe"
+    }
+  }
+}
+
 # Note: import on bootstrap
 resource "tfe_organization" "main" {
   name  = var.org
@@ -21,14 +29,13 @@ resource "tfe_team_member" "members" {
   username = each.key
 }
 
-# Note: requires https://github.com/settings/applications/new
-resource "tfe_oauth_client" "github" {
-  count            = var.github_oauth_token == null ? 0 : 1
+resource "tfe_oauth_client" "client" {
+  for_each         = var.tfe_oauth_client == null ? {} : { (var.tfe_oauth_client.provider) = var.tfe_oauth_client }
   organization     = tfe_organization.main.id
-  api_url          = "https://api.github.com"
-  http_url         = "https://github.com"
-  oauth_token      = var.github_oauth_token
-  service_provider = "github"
+  api_url          = each.value["api_url"]
+  http_url         = each.value["http_url"]
+  oauth_token      = var.tfe_oauth_client_token
+  service_provider = each.key
 }
 
 resource "tfe_organization_token" "org" {
