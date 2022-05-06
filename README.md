@@ -11,3 +11,4 @@ Manages Terraform Cloud and workspaces.
 | Name | Version |
 |------|---------|
 | tfe | >= 0.24.0 |
+
